@@ -34,4 +34,11 @@ public class Leitor implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "leitor")
     private List<Emprestimo> emprestimos = new ArrayList<>();
+
+    public Leitor(Long id, String nome, String telefone, String email) {
+        this.id = id;
+        this.nome = nome;
+        this.telefone = telefone;
+        this.email = email;
+    }
 }
