@@ -1,5 +1,9 @@
 package com.example.biblioteca.services;
 
+import com.example.biblioteca.dtos.LivroAdicionarExemplaresDTO;
+import com.example.biblioteca.dtos.LivroRequestDTO;
+import com.example.biblioteca.entitites.Autor;
+import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.LivroRepository;
 import org.springframework.stereotype.Service;
@@ -29,13 +33,18 @@ public class LivroService {
         return livro.get();
     }
     
-    public Livro cadastrarLivro(Livro livro) {
-        return livroRepository.save(livro);
+    public Livro cadastrarLivro(LivroRequestDTO requestDTO) {
+       Autor autor = autorService.buscarAutorPorId(requestDTO.autorId());
+       Categoria categoria = categoriaService.buscarCategoriaPorId(requestDTO.categoriaId());
+
+       Livro livro = new Livro(null, requestDTO.titulo(),0,  autor, categoria);
+
+       return livroRepository.save(livro);
     }
     
-    public Livro atualizarLivro(Long id, Livro novosDados) {
+    public Livro atualizarLivro(Long id, LivroRequestDTO requestDTO) {
         Livro livroAtual = buscarLivroPorId(id);
-        atualizarDados(livroAtual, novosDados);
+        atualizarDados(livroAtual, requestDTO);
         return livroRepository.save(livroAtual);
     }
 
@@ -44,21 +53,21 @@ public class LivroService {
         livroRepository.delete(livroDeletar);
     }
 
-    private void atualizarDados(Livro livroAtual, Livro novosDados) {
-        livroAtual.setTitulo(novosDados.getTitulo());
+    private void atualizarDados(Livro livroAtual, LivroRequestDTO requestDTO) {
+        livroAtual.setTitulo(requestDTO.titulo());
 
         livroAtual.setAutor(
-                autorService.buscarAutorPorId(novosDados.getAutor().getId())
+                autorService.buscarAutorPorId(requestDTO.autorId())
         );
 
         livroAtual.setCategoria(
-                categoriaService.buscarCategoriaPorId(novosDados.getCategoria().getId())
+                categoriaService.buscarCategoriaPorId(requestDTO.categoriaId())
         );
     }
 
-    public Livro adicionarExemplaresAoEstoque(Long id, Integer quantidade) {
+    public Livro adicionarExemplaresAoEstoque(Long id, LivroAdicionarExemplaresDTO adicionarExemplaresDTO) {
         Livro livro = buscarLivroPorId(id);
-        livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + quantidade);
+        livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + adicionarExemplaresDTO.quantidade());
         return livroRepository.save(livro);
     }
 

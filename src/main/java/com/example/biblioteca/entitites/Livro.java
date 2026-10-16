@@ -39,4 +39,12 @@ public class Livro implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "livro")
     private List<Emprestimo> emprestimos = new ArrayList<>();
+
+    public Livro(Long id, String titulo, Integer quantidadeDisponivel, Autor autor, Categoria categoria) {
+        this.id = id;
+        this.titulo = titulo;
+        this.quantidadeDisponivel = quantidadeDisponivel;
+        this.autor = autor;
+        this.categoria = categoria;
+    }
 }
