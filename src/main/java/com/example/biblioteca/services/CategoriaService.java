@@ -1,5 +1,6 @@
 package com.example.biblioteca.services;
 
+import com.example.biblioteca.dtos.CategoriaRequestDTO;
 import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.repositories.CategoriaRepository;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,14 @@ public class CategoriaService {
         return categoria.get();
     }
 
-    public Categoria cadastrarCategoria(Categoria categoria) {
+    public Categoria cadastrarCategoria(CategoriaRequestDTO requestDTO) {
+        Categoria categoria = new Categoria(null, requestDTO.nome());
         return categoriaRepository.save(categoria);
     }
 
-    public Categoria atualizarCategoria(Long id, Categoria novosDados) {
+    public Categoria atualizarCategoria(Long id, CategoriaRequestDTO requestDTO) {
         Categoria dadosAtuais = buscarCategoriaPorId(id);
-        atualizarDados(dadosAtuais, novosDados);
+        atualizarDados(dadosAtuais, requestDTO);
         return categoriaRepository.save(dadosAtuais);
     }
 
@@ -40,7 +42,7 @@ public class CategoriaService {
         categoriaRepository.delete(categoriaDeletar);
     }
 
-    private void atualizarDados(Categoria dadosAtuais, Categoria novosDados) {
-        dadosAtuais.setNome(novosDados.getNome());
+    private void atualizarDados(Categoria dadosAtuais, CategoriaRequestDTO responseDTO) {
+        dadosAtuais.setNome(responseDTO.nome());
     }
 }
