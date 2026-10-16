@@ -1,5 +1,6 @@
 package com.example.biblioteca.services;
 
+import com.example.biblioteca.dtos.AutorRequestDTO;
 import com.example.biblioteca.entitites.Autor;
 import com.example.biblioteca.repositories.AutorRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class AutorService {
         this.autorRepository = autorRepository;
     }
 
-    public List<Autor> listarTodos() {
+    public List<Autor> listarAutores() {
         return autorRepository.findAll();
     }
 
@@ -25,13 +26,14 @@ public class AutorService {
         return autor.get();
     }
 
-    public Autor cadastrarAutor(Autor autor) {
+    public Autor cadastrarAutor(AutorRequestDTO requestDTO) {
+        Autor autor = new Autor(null, requestDTO.nome());
         return autorRepository.save(autor);
     }
 
-    public Autor atualizarAutor(Long id, Autor novosDados) {
+    public Autor atualizarAutor(Long id, AutorRequestDTO requestDTO) {
         Autor dadosAtuais = buscarAutorPorId(id);
-        atualizarDados(dadosAtuais, novosDados);
+        atualizarDados(dadosAtuais, requestDTO);
         return autorRepository.save(dadosAtuais);
     }
 
@@ -40,8 +42,8 @@ public class AutorService {
         autorRepository.delete(autorDeletar);
     }
 
-    private void atualizarDados(Autor dadosAtuais, Autor novosDados) {
-        dadosAtuais.setNome(novosDados.getNome());
+    private void atualizarDados(Autor dadosAtuais, AutorRequestDTO requestDTO) {
+        dadosAtuais.setNome(requestDTO.nome());
     }
 
 }
