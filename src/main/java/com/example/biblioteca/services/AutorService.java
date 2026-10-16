@@ -3,6 +3,7 @@ package com.example.biblioteca.services;
 import com.example.biblioteca.dtos.AutorRequestDTO;
 import com.example.biblioteca.entitites.Autor;
 import com.example.biblioteca.repositories.AutorRepository;
+import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class AutorService {
 
     public Autor buscarAutorPorId(Long id) {
         Optional<Autor> autor = autorRepository.findById(id);
-        return autor.get();
+        return autor.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Autor cadastrarAutor(AutorRequestDTO requestDTO) {

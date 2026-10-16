@@ -3,6 +3,7 @@ package com.example.biblioteca.services;
 import com.example.biblioteca.dtos.CategoriaRequestDTO;
 import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.repositories.CategoriaRepository;
+import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class CategoriaService {
 
     public Categoria buscarCategoriaPorId(Long id) {
         Optional<Categoria> categoria = categoriaRepository.findById(id);
-        return categoria.get();
+        return categoria.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Categoria cadastrarCategoria(CategoriaRequestDTO requestDTO) {

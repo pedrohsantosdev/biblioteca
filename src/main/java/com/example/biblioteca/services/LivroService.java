@@ -6,6 +6,7 @@ import com.example.biblioteca.entitites.Autor;
 import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.LivroRepository;
+import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class LivroService {
     
     public Livro buscarLivroPorId(Long id) {
         Optional<Livro> livro = livroRepository.findById(id);
-        return livro.get();
+        return livro.orElseThrow(() -> new ResourceNotFoundException(id));
     }
     
     public Livro cadastrarLivro(LivroRequestDTO requestDTO) {

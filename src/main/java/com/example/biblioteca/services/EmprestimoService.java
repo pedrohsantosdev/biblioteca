@@ -6,6 +6,7 @@ import com.example.biblioteca.entitites.Emprestimo;
 import com.example.biblioteca.entitites.Leitor;
 import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.EmprestimoRepository;
+import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class EmprestimoService {
 
     public Emprestimo buscarEmprestimoPorId(Long id) {
         Optional<Emprestimo> emprestimo = emprestimoRepository.findById(id);
-        return emprestimo.get();
+        return emprestimo.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Emprestimo cadastrarEmprestimo(EmprestimoRequestDTO requestDTO) {
