@@ -3,11 +3,11 @@ package com.example.biblioteca.resources.exceptions;
 import java.time.Instant;
 
 public class StandardError {
-    Integer status;
-    String error;
-    String message;
-    Instant instant;
-    String path;
+    private Integer status;
+    private String error;
+    private String message;
+    private Instant instant;
+    private String path;
 
     public StandardError() {
     }

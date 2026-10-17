@@ -6,8 +6,9 @@ import com.example.biblioteca.entitites.Emprestimo;
 import com.example.biblioteca.entitites.Leitor;
 import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.EmprestimoRepository;
-import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
+import com.example.biblioteca.services.exceptions.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,9 +37,15 @@ public class EmprestimoService {
         return emprestimo.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    @Transactional
     public Emprestimo cadastrarEmprestimo(EmprestimoRequestDTO requestDTO) {
 
         Livro livro = livroService.buscarLivroPorId(requestDTO.livroId());
+
+        if(livro.getQuantidadeDisponivel() <= 0) {
+            throw new LivroIndisponivelException("Não há exemplares disponíveis no momento!");
+        }
+
         livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() - 1);
 
         Leitor leitor = leitorService.buscarLeitorPorId(requestDTO.leitorId());
@@ -52,20 +59,43 @@ public class EmprestimoService {
         return emprestimoRepository.save(emprestimo);
     }
 
+    @Transactional
     public Emprestimo renovarEmprestimo(Long id, EmprestimoRenovarDTO dto) {
         Emprestimo emprestimoAtual = buscarEmprestimoPorId(id);
+
+        if(emprestimoAtual.getDataDevolucao() != null) {
+            throw new EmprestimoJaDevolvidoException("Impossível renovar um empréstimo com livro já devolvido!");
+        }
+        if(!dto.novoPrazo().isAfter(emprestimoAtual.getPrazoDevolucao())) {
+            throw new InvalidDateException("O novo prazo deve ser posterior ao atual!");
+        }
+
         emprestimoAtual.setPrazoDevolucao(dto.novoPrazo());
+
         return emprestimoRepository.save(emprestimoAtual);
     }
 
+    @Transactional
     public Emprestimo registrarDevolucao(Long id) {
         Emprestimo emprestimoAtual = buscarEmprestimoPorId(id);
+
+        if(emprestimoAtual.getDataDevolucao() != null) {
+            return emprestimoAtual;
+        }
+
+        emprestimoAtual.getLivro().setQuantidadeDisponivel(emprestimoAtual.getLivro().getQuantidadeDisponivel() + 1);
         emprestimoAtual.setDataDevolucao(LocalDateTime.now());
         return emprestimoRepository.save(emprestimoAtual);
     }
 
+    @Transactional
     public void deletarEmprestimo(Long id) {
         Emprestimo emprestimo = buscarEmprestimoPorId(id);
+
+        if(emprestimo.getDataDevolucao() == null) {
+            throw new EmprestimoSemDevolucaoException("Impossível deletar empréstimo sem devolução");
+        }
+
         emprestimoRepository.delete(emprestimo);
     }
 }

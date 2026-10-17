@@ -5,6 +5,7 @@ import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.repositories.CategoriaRepository;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +33,14 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
+    @Transactional
     public Categoria atualizarCategoria(Long id, CategoriaRequestDTO requestDTO) {
         Categoria dadosAtuais = buscarCategoriaPorId(id);
         atualizarDados(dadosAtuais, requestDTO);
         return categoriaRepository.save(dadosAtuais);
     }
 
+    @Transactional
     public void deletarCategoria(Long id) {
         Categoria categoriaDeletar = buscarCategoriaPorId(id);
         categoriaRepository.delete(categoriaDeletar);

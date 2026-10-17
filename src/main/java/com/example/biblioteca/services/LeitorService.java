@@ -5,6 +5,7 @@ import com.example.biblioteca.entitites.Leitor;
 import com.example.biblioteca.repositories.LeitorRepository;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +33,14 @@ public class LeitorService {
         return leitorRepository.save(leitor);
     }
 
+    @Transactional
     public Leitor atualizarLeitor(Long id, LeitorRequestDTO requestDTO) {
         Leitor leitorAtual = buscarLeitorPorId(id);
         atualizarDados(leitorAtual, requestDTO);
         return leitorRepository.save(leitorAtual);
     }
 
+    @Transactional
     public void deletarLeitor(Long id) {
         Leitor leitorDeletar = buscarLeitorPorId(id);
         leitorRepository.delete(leitorDeletar);

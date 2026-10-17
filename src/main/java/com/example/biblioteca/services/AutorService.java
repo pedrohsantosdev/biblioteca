@@ -5,6 +5,7 @@ import com.example.biblioteca.entitites.Autor;
 import com.example.biblioteca.repositories.AutorRepository;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +33,14 @@ public class AutorService {
         return autorRepository.save(autor);
     }
 
+    @Transactional
     public Autor atualizarAutor(Long id, AutorRequestDTO requestDTO) {
         Autor dadosAtuais = buscarAutorPorId(id);
         atualizarDados(dadosAtuais, requestDTO);
         return autorRepository.save(dadosAtuais);
     }
 
+    @Transactional
     public void deletarAutor(Long id) {
         Autor autorDeletar = buscarAutorPorId(id);
         autorRepository.delete(autorDeletar);

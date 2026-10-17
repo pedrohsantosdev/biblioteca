@@ -8,6 +8,7 @@ import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.LivroRepository;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +43,15 @@ public class LivroService {
 
        return livroRepository.save(livro);
     }
-    
+
+    @Transactional
     public Livro atualizarLivro(Long id, LivroRequestDTO requestDTO) {
         Livro livroAtual = buscarLivroPorId(id);
         atualizarDados(livroAtual, requestDTO);
         return livroRepository.save(livroAtual);
     }
 
+    @Transactional
     public void deletarLivroPorId(Long id) {
         Livro livroDeletar = buscarLivroPorId(id);
         livroRepository.delete(livroDeletar);
@@ -66,6 +69,7 @@ public class LivroService {
         );
     }
 
+    @Transactional
     public Livro adicionarExemplaresAoEstoque(Long id, LivroAdicionarExemplaresDTO adicionarExemplaresDTO) {
         Livro livro = buscarLivroPorId(id);
         livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + adicionarExemplaresDTO.quantidade());
