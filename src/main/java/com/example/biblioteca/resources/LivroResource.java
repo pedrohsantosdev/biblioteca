@@ -46,6 +46,14 @@ public class LivroResource {
         return ResponseEntity.ok().body(livrosDtos);
     }
 
+    @GetMapping(value = "/categoria/{id}")
+    public ResponseEntity<List<LivroResponseDTO>> buscarLivroPorCategoria(@PathVariable Long id) {
+        List<Livro> livros = livroService.buscarLivroPorCategoria(id);
+        List<LivroResponseDTO> livrosDtos = livros.stream()
+                .map(livro -> new LivroResponseDTO(livro)).toList();
+        return ResponseEntity.ok().body(livrosDtos);
+    }
+
     @PostMapping
     public ResponseEntity<LivroResponseDTO> cadastrarLivro(@Valid @RequestBody LivroRequestDTO requestDTO) {
         Livro livro = livroService.cadastrarLivro(requestDTO);
