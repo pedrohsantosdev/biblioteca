@@ -47,6 +47,15 @@ public class EmprestimoResource {
         return ResponseEntity.ok().body(emprestimosDtos);
     }
 
+    @GetMapping(value = "/atrasados")
+    public ResponseEntity<List<EmprestimoResponseDTO>> buscarEmprestimosAtrasados() {
+        List<Emprestimo> emprestimos = emprestimoService.buscarEmprestimosAtrasados();
+        List<EmprestimoResponseDTO> emprestimosDtos = emprestimos.stream()
+                .map(emprestimo -> new EmprestimoResponseDTO(emprestimo)).toList();
+
+        return ResponseEntity.ok().body(emprestimosDtos);
+    }
+
     @PostMapping
     public ResponseEntity<EmprestimoResponseDTO> cadastrarEmprestimo(@Valid @RequestBody EmprestimoRequestDTO requestDTO) {
         Emprestimo emprestimo = emprestimoService.cadastrarEmprestimo(requestDTO);

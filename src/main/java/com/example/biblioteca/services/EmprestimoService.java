@@ -43,6 +43,13 @@ public class EmprestimoService {
         return emprestimos;
     }
 
+    public List<Emprestimo> buscarEmprestimosAtrasados() {
+        LocalDate dataAtual = LocalDate.now();
+        List<Emprestimo> emprestimos = emprestimoRepository.findByDataDevolucaoNullAndPrazoDevolucaoBefore(dataAtual);
+        return emprestimos;
+    }
+
+
     @Transactional
     public Emprestimo cadastrarEmprestimo(EmprestimoRequestDTO requestDTO) {
 
