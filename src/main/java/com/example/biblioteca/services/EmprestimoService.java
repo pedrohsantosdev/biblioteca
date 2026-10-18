@@ -37,6 +37,12 @@ public class EmprestimoService {
         return emprestimo.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    public List<Emprestimo> buscarEmprestimosPorLeitor(Long id) {
+        leitorService.buscarLeitorPorId(id);
+        List<Emprestimo> emprestimos = emprestimoRepository.findByLeitorId(id);
+        return emprestimos;
+    }
+
     @Transactional
     public Emprestimo cadastrarEmprestimo(EmprestimoRequestDTO requestDTO) {
 

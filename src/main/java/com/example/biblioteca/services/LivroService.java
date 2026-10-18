@@ -45,9 +45,14 @@ public class LivroService {
         return livros;
     }
 
-    public List<Livro> buscarLivroPorCategoria(Long id) {
+    public List<Livro> buscarLivrosPorCategoria(Long id) {
         categoriaService.buscarCategoriaPorId(id);
         return livroRepository.findByCategoriaId(id);
+    }
+
+    public List<Livro> buscarLivrosPorAutor(Long id) {
+        autorService.buscarAutorPorId(id);
+        return livroRepository.findByAutorId(id);
     }
     
     public Livro cadastrarLivro(LivroRequestDTO requestDTO) {

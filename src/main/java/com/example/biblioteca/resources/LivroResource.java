@@ -47,8 +47,16 @@ public class LivroResource {
     }
 
     @GetMapping(value = "/categoria/{id}")
-    public ResponseEntity<List<LivroResponseDTO>> buscarLivroPorCategoria(@PathVariable Long id) {
-        List<Livro> livros = livroService.buscarLivroPorCategoria(id);
+    public ResponseEntity<List<LivroResponseDTO>> buscarLivrosPorCategoria(@PathVariable Long id) {
+        List<Livro> livros = livroService.buscarLivrosPorCategoria(id);
+        List<LivroResponseDTO> livrosDtos = livros.stream()
+                .map(livro -> new LivroResponseDTO(livro)).toList();
+        return ResponseEntity.ok().body(livrosDtos);
+    }
+
+    @GetMapping(value = "/autor/{id}")
+    public ResponseEntity<List<LivroResponseDTO>> buscarLivrosPorAutor(@PathVariable Long id) {
+        List<Livro> livros = livroService.buscarLivrosPorAutor(id);
         List<LivroResponseDTO> livrosDtos = livros.stream()
                 .map(livro -> new LivroResponseDTO(livro)).toList();
         return ResponseEntity.ok().body(livrosDtos);
