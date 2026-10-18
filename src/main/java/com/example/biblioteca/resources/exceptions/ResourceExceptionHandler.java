@@ -1,16 +1,15 @@
 package com.example.biblioteca.resources.exceptions;
 
-import com.example.biblioteca.services.exceptions.EmprestimoJaDevolvidoException;
-import com.example.biblioteca.services.exceptions.InvalidDateException;
-import com.example.biblioteca.services.exceptions.LivroIndisponivelException;
-import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
+import com.example.biblioteca.services.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -99,7 +98,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    public ResponseEntity<StandardError> impossivelDeletarEmprestimoSemDevolucao(EmprestimoJaDevolvidoException e, HttpServletRequest request) {
+    @ExceptionHandler(EmprestimoSemDevolucaoException.class)
+    public ResponseEntity<StandardError> impossivelDeletarEmprestimoSemDevolucao(EmprestimoSemDevolucaoException e, HttpServletRequest request) {
 
         HttpStatus status = HttpStatus.CONFLICT;
         String error = "Impossível deletar empréstimo sem devolução!";
@@ -107,6 +107,31 @@ public class ResourceExceptionHandler {
         StandardError err = new StandardError(
                 status.value(), error, e.getMessage(), Instant.now(), request.getRequestURI()
         );
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> corpoInvalido(HttpMessageNotReadableException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String error = "Corpo da requisição inválido!";
+        String message = "Envie um JSON válido, com os tipos dos campos "
+                + "corretos e as datas no formato yyyy-MM-dd.";
+
+        StandardError err = new StandardError(status.value(), error, message, Instant.now(), request.getRequestURI());
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StandardError> requisicaoInvalida(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String error = "Requisição inválida!";
+        String message = "Valor inválido para o parâmetro '" + e.getName() + "'.";
+
+        StandardError err = new StandardError(status.value(), error, message, Instant.now(), request.getRequestURI());
 
         return ResponseEntity.status(status).body(err);
     }
