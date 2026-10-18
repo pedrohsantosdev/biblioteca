@@ -38,6 +38,14 @@ public class LivroResource {
         return ResponseEntity.ok().body(new LivroResponseDTO(livro));
     }
 
+    @GetMapping(value = "/titulo")
+    public ResponseEntity <List<LivroResponseDTO>> buscarLivroPorTitulo(@RequestParam(name = "nome") String titulo) {
+        List<Livro> livros = livroService.buscarLivroPorTitulo(titulo);
+        List<LivroResponseDTO> livrosDtos = livros.stream()
+                .map(livro -> new LivroResponseDTO(livro)).toList();
+        return ResponseEntity.ok().body(livrosDtos);
+    }
+
     @PostMapping
     public ResponseEntity<LivroResponseDTO> cadastrarLivro(@Valid @RequestBody LivroRequestDTO requestDTO) {
         Livro livro = livroService.cadastrarLivro(requestDTO);

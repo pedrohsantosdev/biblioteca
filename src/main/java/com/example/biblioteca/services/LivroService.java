@@ -34,6 +34,16 @@ public class LivroService {
         Optional<Livro> livro = livroRepository.findById(id);
         return livro.orElseThrow(() -> new ResourceNotFoundException(id));
     }
+
+    public List<Livro> buscarLivroPorTitulo(String titulo) {
+        List<Livro> livros = livroRepository.findByTituloContainingIgnoreCase(titulo);
+
+        if(livros.isEmpty()) {
+            throw new ResourceNotFoundException(titulo);
+        }
+
+        return livros;
+    }
     
     public Livro cadastrarLivro(LivroRequestDTO requestDTO) {
        Autor autor = autorService.buscarAutorPorId(requestDTO.autorId());
