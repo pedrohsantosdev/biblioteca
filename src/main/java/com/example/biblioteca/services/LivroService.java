@@ -45,11 +45,13 @@ public class LivroService {
         return livros;
     }
 
+    @Transactional
     public List<Livro> buscarLivrosPorCategoria(Long id) {
         categoriaService.buscarCategoriaPorId(id);
         return livroRepository.findByCategoriaId(id);
     }
 
+    @Transactional
     public List<Livro> buscarLivrosPorAutor(Long id) {
         autorService.buscarAutorPorId(id);
         return livroRepository.findByAutorId(id);

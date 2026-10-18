@@ -37,9 +37,15 @@ public class EmprestimoService {
         return emprestimo.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    @Transactional
     public List<Emprestimo> buscarEmprestimosPorLeitor(Long id) {
         leitorService.buscarLeitorPorId(id);
         List<Emprestimo> emprestimos = emprestimoRepository.findByLeitorId(id);
+        return emprestimos;
+    }
+
+    public List<Emprestimo> buscarEmprestimosAtivos() {
+        List<Emprestimo> emprestimos = emprestimoRepository.findByDataDevolucaoNull();
         return emprestimos;
     }
 
@@ -48,7 +54,6 @@ public class EmprestimoService {
         List<Emprestimo> emprestimos = emprestimoRepository.findByDataDevolucaoNullAndPrazoDevolucaoBefore(dataAtual);
         return emprestimos;
     }
-
 
     @Transactional
     public Emprestimo cadastrarEmprestimo(EmprestimoRequestDTO requestDTO) {
