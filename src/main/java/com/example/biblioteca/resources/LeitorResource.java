@@ -1,5 +1,6 @@
 package com.example.biblioteca.resources;
 
+import com.example.biblioteca.dtos.EmprestimoResponseDTO;
 import com.example.biblioteca.dtos.LeitorRequestDTO;
 import com.example.biblioteca.dtos.LeitorResponseDTO;
 import com.example.biblioteca.entitites.Leitor;
@@ -35,6 +36,15 @@ public class LeitorResource {
     public ResponseEntity<LeitorResponseDTO> buscarLeitorPorId(@PathVariable Long id) {
         Leitor leitor = leitorService.buscarLeitorPorId(id);
         return ResponseEntity.ok().body(new LeitorResponseDTO(leitor));
+    }
+
+    @GetMapping(value = "/nome")
+    public ResponseEntity<List<LeitorResponseDTO>> buscarLeitorPorNome(@RequestParam(name = "nome") String nome) {
+        List<Leitor> leitores = leitorService.buscarLeitoresPorNome(nome);
+        List<LeitorResponseDTO> leitoresDtos = leitores.stream()
+                .map(leitor -> new LeitorResponseDTO(leitor)).toList();
+
+        return ResponseEntity.ok().body(leitoresDtos);
     }
 
     @PostMapping

@@ -37,13 +37,7 @@ public class LivroService {
     }
 
     public List<Livro> buscarLivroPorTitulo(String titulo) {
-        List<Livro> livros = livroRepository.findByTituloContainingIgnoreCase(titulo);
-
-        if(livros.isEmpty()) {
-            throw new ResourceNotFoundException(titulo);
-        }
-
-        return livros;
+        return livroRepository.findByTituloContainingIgnoreCase(titulo);
     }
 
     @Transactional

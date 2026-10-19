@@ -37,6 +37,15 @@ public class AutorResource {
         return ResponseEntity.ok().body(new AutorResponseDTO(autor));
     }
 
+    @GetMapping(value = "/nome")
+    public ResponseEntity<List<AutorResponseDTO>> buscarAutoresPorNome(@RequestParam(name = "nome") String nome) {
+        List<Autor> autores = autorService.buscarAutoresPorNome(nome);
+        List<AutorResponseDTO> autoresDtos = autores.stream()
+                .map(autor -> new AutorResponseDTO(autor)).toList();
+
+        return ResponseEntity.ok().body(autoresDtos);
+    }
+
     @PostMapping
     public ResponseEntity<AutorResponseDTO> cadastrarAutor(@Valid @RequestBody AutorRequestDTO requestDTO) {
         Autor autor = autorService.cadastrarAutor(requestDTO);

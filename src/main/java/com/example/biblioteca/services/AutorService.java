@@ -28,6 +28,10 @@ public class AutorService {
         return autor.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    public List<Autor> buscarAutoresPorNome(String nome) {
+        return autorRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
     public Autor cadastrarAutor(AutorRequestDTO requestDTO) {
         Autor autor = new Autor(null, requestDTO.nome());
         return autorRepository.save(autor);

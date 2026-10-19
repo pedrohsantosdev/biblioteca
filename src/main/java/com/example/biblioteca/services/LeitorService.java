@@ -2,6 +2,7 @@ package com.example.biblioteca.services;
 
 import com.example.biblioteca.dtos.LeitorRequestDTO;
 import com.example.biblioteca.entitites.Leitor;
+import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.LeitorRepository;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,10 @@ public class LeitorService {
     public Leitor buscarLeitorPorId(Long id) {
         Optional<Leitor> leitor = leitorRepository.findById(id);
         return leitor.orElseThrow(() -> new ResourceNotFoundException(id));
+    }
+
+    public List<Leitor> buscarLeitoresPorNome(String nome) {
+        return leitorRepository.findByNomeContainingIgnoreCase(nome);
     }
 
     public Leitor cadastrarLeitor(LeitorRequestDTO requestDTO) {
