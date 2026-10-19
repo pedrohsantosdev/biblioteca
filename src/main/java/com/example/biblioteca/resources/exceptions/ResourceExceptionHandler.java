@@ -136,4 +136,17 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(EstoqueInsuficienteException.class)
+    public ResponseEntity<StandardError> estoqueInsuficiente(EstoqueInsuficienteException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        String error = "Estoque insuficiente";
+
+        StandardError err = new StandardError(
+                status.value(), error, e.getMessage(), Instant.now(), request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(err);
+    }
+
 }

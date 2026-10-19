@@ -1,11 +1,12 @@
 package com.example.biblioteca.services;
 
-import com.example.biblioteca.dtos.LivroAdicionarExemplaresDTO;
+import com.example.biblioteca.dtos.LivroExemplaresDTO;
 import com.example.biblioteca.dtos.LivroRequestDTO;
 import com.example.biblioteca.entitites.Autor;
 import com.example.biblioteca.entitites.Categoria;
 import com.example.biblioteca.entitites.Livro;
 import com.example.biblioteca.repositories.LivroRepository;
+import com.example.biblioteca.services.exceptions.EstoqueInsuficienteException;
 import com.example.biblioteca.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +57,10 @@ public class LivroService {
         autorService.buscarAutorPorId(id);
         return livroRepository.findByAutorId(id);
     }
+
+    public List<Livro> listarLivrosDisponiveis() {
+        return livroRepository.buscarLivrosDisponiveis();
+    }
     
     public Livro cadastrarLivro(LivroRequestDTO requestDTO) {
        Autor autor = autorService.buscarAutorPorId(requestDTO.autorId());
@@ -92,9 +97,21 @@ public class LivroService {
     }
 
     @Transactional
-    public Livro adicionarExemplaresAoEstoque(Long id, LivroAdicionarExemplaresDTO adicionarExemplaresDTO) {
+    public Livro adicionarExemplaresAoEstoque(Long id, LivroExemplaresDTO adicionarExemplaresDTO) {
         Livro livro = buscarLivroPorId(id);
         livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + adicionarExemplaresDTO.quantidade());
+        return livroRepository.save(livro);
+    }
+
+    @Transactional
+    public Livro retirarExemplaresDoEstoque(Long id, LivroExemplaresDTO retirarExemplaresDTO) {
+        Livro livro = buscarLivroPorId(id);
+
+        if(retirarExemplaresDTO.quantidade() > livro.getQuantidadeDisponivel()) {
+            throw new EstoqueInsuficienteException("Impóssivel retirar uma quantidade maior que o atual estoque de livros!");
+        }
+
+        livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() - retirarExemplaresDTO.quantidade());
         return livroRepository.save(livro);
     }
 

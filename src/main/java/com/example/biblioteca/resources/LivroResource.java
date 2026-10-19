@@ -1,6 +1,6 @@
 package com.example.biblioteca.resources;
 
-import com.example.biblioteca.dtos.LivroAdicionarExemplaresDTO;
+import com.example.biblioteca.dtos.LivroExemplaresDTO;
 import com.example.biblioteca.dtos.LivroRequestDTO;
 import com.example.biblioteca.dtos.LivroResponseDTO;
 import com.example.biblioteca.entitites.Livro;
@@ -62,6 +62,14 @@ public class LivroResource {
         return ResponseEntity.ok().body(livrosDtos);
     }
 
+    @GetMapping(value = "/disponiveis")
+    public ResponseEntity<List<LivroResponseDTO>> listarLivrosDisponiveis() {
+        List<Livro> livros = livroService.listarLivrosDisponiveis();
+        List<LivroResponseDTO> livrosDtos = livros.stream()
+                .map(livro -> new LivroResponseDTO(livro)).toList();
+        return ResponseEntity.ok().body(livrosDtos);
+    }
+
     @PostMapping
     public ResponseEntity<LivroResponseDTO> cadastrarLivro(@Valid @RequestBody LivroRequestDTO requestDTO) {
         Livro livro = livroService.cadastrarLivro(requestDTO);
@@ -76,8 +84,14 @@ public class LivroResource {
     }
 
     @PatchMapping(value = "/adicionar/{id}")
-    public ResponseEntity<LivroResponseDTO> adicionarExemplaresAoEstoque(@PathVariable Long id, @Valid @RequestBody LivroAdicionarExemplaresDTO adicionarExemplaresDTO) {
+    public ResponseEntity<LivroResponseDTO> adicionarExemplaresAoEstoque(@PathVariable Long id, @Valid @RequestBody LivroExemplaresDTO adicionarExemplaresDTO) {
         Livro livro = livroService.adicionarExemplaresAoEstoque(id, adicionarExemplaresDTO);
+        return ResponseEntity.ok().body(new LivroResponseDTO(livro));
+    }
+
+    @PatchMapping(value = "/retirar/{id}")
+    public ResponseEntity<LivroResponseDTO> retirarExemplaresDoEstoque(@PathVariable Long id, @Valid @RequestBody LivroExemplaresDTO retirarExemplaresDTO) {
+        Livro livro = livroService.retirarExemplaresDoEstoque(id, retirarExemplaresDTO);
         return ResponseEntity.ok().body(new LivroResponseDTO(livro));
     }
 
