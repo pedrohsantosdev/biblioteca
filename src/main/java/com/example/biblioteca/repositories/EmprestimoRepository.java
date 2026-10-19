@@ -11,4 +11,6 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
     List<Emprestimo> findByLeitorId(Long id);
     List<Emprestimo> findByDataDevolucaoNull();
     List<Emprestimo> findByDataDevolucaoNullAndPrazoDevolucaoBefore(LocalDate dataAtual);
+    long countByLeitorIdAndDataDevolucaoIsNull(Long leitorId);
+    boolean existsByLeitorIdAndDataDevolucaoIsNullAndPrazoDevolucaoBefore(Long leitorId, LocalDate dataAtual);
 }

@@ -68,6 +68,13 @@ public class EmprestimoService {
 
         Leitor leitor = leitorService.buscarLeitorPorId(requestDTO.leitorId());
 
+        if(emprestimoRepository.existsByLeitorIdAndDataDevolucaoIsNullAndPrazoDevolucaoBefore(leitor.getId(), LocalDate.now())) {
+            throw new EmprestimoEmAtrasoException("Impossível realizar outro empréstimo antes de devolver um livro em atraso!");
+        }
+        if(emprestimoRepository.countByLeitorIdAndDataDevolucaoIsNull(leitor.getId()) >= 3) {
+            throw new LimiteEmprestimoException("O leitor atingiu o limite permitido de empréstimos sem devolução!");
+        }
+
         LocalDateTime dataEmprestimo = LocalDateTime.now();
         LocalDate prazoDevolucao = LocalDate.now().plusDays(30);
 

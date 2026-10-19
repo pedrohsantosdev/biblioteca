@@ -149,4 +149,30 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(LimiteEmprestimoException.class)
+    public ResponseEntity<StandardError> limiteEmprestimo(LimiteEmprestimoException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        String error = "Limite de empréstimos atingido";
+
+        StandardError err = new StandardError(
+                status.value(), error, e.getMessage(), Instant.now(), request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(EmprestimoEmAtrasoException.class)
+    public ResponseEntity<StandardError> emprestimoEmAtraso(EmprestimoEmAtrasoException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        String error = "Leitor possui empréstimos em situação de atraso!";
+
+        StandardError err = new StandardError(
+                status.value(), error, e.getMessage(), Instant.now(), request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(err);
+    }
+
 }

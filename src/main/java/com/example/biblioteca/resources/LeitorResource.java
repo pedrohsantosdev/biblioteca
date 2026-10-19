@@ -1,6 +1,5 @@
 package com.example.biblioteca.resources;
 
-import com.example.biblioteca.dtos.EmprestimoResponseDTO;
 import com.example.biblioteca.dtos.LeitorRequestDTO;
 import com.example.biblioteca.dtos.LeitorResponseDTO;
 import com.example.biblioteca.entitites.Leitor;
